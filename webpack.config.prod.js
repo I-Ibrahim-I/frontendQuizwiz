@@ -7,7 +7,7 @@ module.exports = merge(base, {
   mode: 'production',
   output: {
     filename: 'bundle.min.js',
-    publicPath: '/',
+    publicPath: '/frontendQuizwiz',
   },
   devtool: false,
   performance: {
