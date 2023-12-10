@@ -140,7 +140,9 @@ async function handleLoginClick(e) {
       },
     };
 
-    const response = await fetch('http://localhost:3000/users/login', options);
+    const response = await fetch(`${process.env.API_BASE_URL}/users/login`, options);
+
+    console.log(response.status);
 
     if (!response.ok) {
       Swal.fire({
