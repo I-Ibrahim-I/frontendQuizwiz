@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 
 const readAllCategories = async () => {
   try {
-    const response = await fetch('http://localhost:3000/quizzes/categories');
+    const response = await fetch(`${process.env.API_BASE_URL}/quizzes/categories`);
     if (!response.ok) {
       throw new Error(`Erreur HTTP: ${response.status}`);
     }
@@ -39,7 +39,7 @@ const addOneQuiz = async (quiz) => {
         'Content-Type': 'application/json',
       },
     };
-    const response = await fetch('http://localhost:3000/quizzes', options);
+    const response = await fetch(`${process.env.API_BASE_URL}/quizzes`, options);
     if (!response.ok) {
       throw new Error(`Erreur HTTP: ${response.status}`);
     }
@@ -69,7 +69,7 @@ const addOneQuiz = async (quiz) => {
 
 const readAllQuizzesByUser = async (id) => {
   try {
-    const response = await fetch(`http://localhost:3000/quizzes/?user-id=${id}`);
+    const response = await fetch(`${process.env.API_BASE_URL}/quizzes/?user-id=${id}`);
     if (!response.ok) {
       if (response.status === 400) {
         return [];
@@ -108,7 +108,7 @@ const deleteOneQuiz = async (quiz) => {
       },
     };
     console.log(options);
-    const response = await fetch(`http://localhost:3000/quizzes/${quiz}`, options);
+    const response = await fetch(`${process.env.API_BASE_URL}/quizzes/${quiz}`, options);
     if (!response.ok) {
       throw new Error(`Erreur HTTP: ${response.status}`);
     }
@@ -127,8 +127,8 @@ const deleteOneQuiz = async (quiz) => {
 
 const readAllQuizzesByCategory = async (categoryName) => {
   try {
-    console.log('url :', `http://localhost:3000/quizzes/?label=${categoryName}`);
-    const response = await fetch(`http://localhost:3000/quizzes/?label=${categoryName}`);
+    console.log('url :', `${process.env.API_BASE_URL}/?label=${categoryName}`);
+    const response = await fetch(`${process.env.API_BASE_URL}/quizzes/?label=${categoryName}`);
 
     console.log('response',response)
     if (!response.ok) {

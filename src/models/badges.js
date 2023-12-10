@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 const readAllBadgesByUser = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3000/badges/?user-id=${id}`);
+      const response = await fetch(`${process.env.API_BASE_URL}/badges/?user-id=${id}`);
       if (!response.ok) {
         if (response.status === 400) {
           console.log("reponse40000");

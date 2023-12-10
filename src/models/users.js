@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 const readAllUsers = async () => {
   try {
-    const response = await fetch('http://localhost:3000/users');
+    const response = await fetch(`${process.env.API_BASE_URL}/users`);
     if (!response.ok) {
       throw new Error(`Erreur HTTP: ${response.status}`);
     }
