@@ -77,7 +77,7 @@ async function handleRegisterClick() {
       },
     };
   
-    const response = await fetch('http://localhost:3000/users/register', options);
+    const response = await fetch(`${process.env.API_BASE_URL}/users/register`, options);
   
     if (!response.ok) {
       Swal.fire({
