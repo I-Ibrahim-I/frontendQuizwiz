@@ -1,14 +1,13 @@
-const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
+const webpack = require('webpack');
 
-
-const DEVELOPMENT_API_BASE_URL = '/api'; // base URL of your local API. Use /api if you want to use webpack proxy, else use http://localhost:3000 (frontend origin http://localhost:8080 shall then be authorized by the API cors)
-const PRODUCTION_API_BASE_URL = 'https://your-app-name.azurewebsites.net'; // to be changed to point to the URL of your API
+const DEVELOPMENT_API_BASE_URL = '/api' // base URL of your local API. Use /api if you want to use webpack proxy, else use http://localhost:3000 (frontend origin http://localhost:8080 shall then be authorized by the API cors) 
+const PRODUCTION_API_BASE_URL = 'hgdshjfg'; // to be changed to point to the URL of your API
 const DEVELOPMENT_PATH_PREFIX = '/'; // normally not to be changed, your assets should be provided directly within /dist/ (and not /dist/mymovies/ e.g.)
 const PRODUCTION_PATH_PREFIX = '/frontendQuizwiz/'; // e.g. '/mymovies/' if you deploy to GitHub Pages as a Project site : mymovies would be the repo name
+
 
 const buildMode = process.argv[process.argv.indexOf('--mode') + 1];
 const isProductionBuild = buildMode === 'production';
@@ -62,13 +61,6 @@ module.exports = {
         test: /\.(png|jpg|gif|svg|mp3|mpe?g)$/,
         type: 'asset/resource',
       },
-
-      /* automatically chooses between exporting a data URI and emitting a separate file.
-      {
-        test: /\.(png|jpg|gif|svg|mp3|mpe?g)$/,
-        type : 'asset',
-      },  */
-
       // in html file, emits files in output directory
       // and replace the src with the final path (to deal with svg, img...)
       {
@@ -99,19 +91,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: './src/index.html',
-    }),
-    new CleanWebpackPlugin({
-      root: path.resolve(__dirname, '../'),
-    }),
-    /* For more advanced use cases, these two global variables determine
-    which renderer is included in the Phaser build. If you only want to run
-    your game with WebGL, then you’d set WEBGL_RENDERER to true,
-    and CANVAS_RENDERER to false.
-    This way, your final code bundle would be smaller because all the canvas rendering
-    code would be left out. */
-    new webpack.DefinePlugin({
-      CANVAS_RENDERER: JSON.stringify(true),
-      WEBGL_RENDERER: JSON.stringify(true),
+      publicPath: PATH_PREFIX,
     }),
     new ESLintPlugin(),
     new webpack.DefinePlugin({

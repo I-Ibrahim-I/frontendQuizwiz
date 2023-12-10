@@ -1,5 +1,5 @@
 {
-  "name": "js-phaser-boilerplate",
+  "name": "frontendQuizwiz",
   "version": "1.0.0",
   "description": "myJScourse's modern frontend boilerplate to build a phaser game",
   "scripts": {
@@ -13,7 +13,9 @@
   "devDependencies": {
     "@babel/core": "^7.14.3",
     "@babel/preset-env": "^7.14.4",
+    "autoprefixer": "^10.4.16",
     "babel-loader": "^8.2.2",
+    "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^5.2.6",
     "eslint": "^8.19.0",
     "eslint-config-airbnb-base": "^15.0.0",
