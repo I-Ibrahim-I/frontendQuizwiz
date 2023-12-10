@@ -1,5 +1,5 @@
 {
-  "homepage": "https://I-Ibrahim-I.github.io/frontendQuizwiz",
+  "homepage": "https://I-Ibrahim-I.github.io/frontendQuizwiz/src/components/Pages/HomePAge",
   "name": "js-phaser-boilerplate",
   "version": "1.0.0",
   "description": "myJScourse's modern frontend boilerplate to build a phaser game",
@@ -9,7 +9,7 @@
     "build": "webpack --mode production --config webpack.config.prod.js && cp dist/index.html dist/404.html",
     "start": "webpack serve --mode development --config webpack.config.base.js"
   },
-  "author": "e-baron",
+  "author": "10",
   "license": "CC-BY-SA-4.0",
   "devDependencies": {
     "@babel/core": "^7.14.3",
