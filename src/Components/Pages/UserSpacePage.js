@@ -57,9 +57,7 @@ async function renderUserQuiz() {
   } else {
     allQuizzesByUser.forEach((quiz) => {
       mainListQuiz += `   
-      <a id_quiz="${quiz.quiz_id}" data-uri="/quiz?id=${
-        quiz.quiz_id
-      }" class="text-decoration-none">
+      <a id_quiz="${quiz.quiz_id}" class=".quiz_link text-decoration-none">
      <div class="row">
      <div class="card shadow cardMyQuiz">
          <div class="card-body">
