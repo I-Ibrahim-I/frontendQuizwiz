@@ -1,3 +1,5 @@
+import Navigate from '../Components/Router/Navigate';
+
 const clearPage = () => {
   const main = document.querySelector('main');
   main.innerHTML = '';
@@ -11,4 +13,17 @@ const renderPageTitle = (title) => {
   main.appendChild(pageTitle);
 };
 
-export { clearPage, renderPageTitle };
+async function quizLinkEventListeners() {
+  const btnCategory = document.querySelectorAll('.quiz_link');
+  btnCategory.forEach((quizLink) => {
+    quizLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      const quizId = e.currentTarget.getAttribute('id_quiz');
+      console.log('helloworld');
+      console.log(quizId);
+      Navigate(`/quiz?id=${quizId}`);
+    });
+  });
+}
+
+export { clearPage, renderPageTitle, quizLinkEventListeners };

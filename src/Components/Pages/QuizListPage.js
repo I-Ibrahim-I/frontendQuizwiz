@@ -1,8 +1,8 @@
-import { clearPage } from '../../utils/render';
+import { clearPage,quizLinkEventListeners } from '../../utils/render';
 // eslint-disable-next-line import/named
 // import {categoryName} from "./CategoriesPage";
 import { readAllQuizzesByCategory } from '../../models/quizzes';
-import Navigate from '../Router/Navigate';
+
 // const numberOfQuizInCategory = 10; // voir dans la db
 
 let categoryName;
@@ -57,7 +57,7 @@ async function renderQuizListInCategory() {
 
       QuizList += `
     <div class="col-12 col-lg-3 col-md-6 mt-3">
-    <a data-quiz-id="${q.quiz_id}" class="quiz-link text-decoration-none">
+    <a id_quiz="${q.quiz_id}" class="quiz_link text-decoration-none">
         <div class="card cardQuizzes  style="width: 10rem;">
             <div class="card-body">
                <h5 class="card-title">${q.title}</h5>
@@ -84,20 +84,6 @@ async function renderQuizListInCategory() {
   console.log('Categorie:');
   
 }
-
-function quizLinkEventListeners (){
-  const btnCategory = document.querySelectorAll('.quiz-link');
-  btnCategory.forEach((quizLink) => {
-    quizLink.addEventListener('click', (e) =>{
-      e.preventDefault(); 
-      const quizId = e.currentTarget.getAttribute('data-quiz-id');
-      console.log("helloworld");
-      console.log(quizId);
-      Navigate(`/quiz?id=${quizId}`);
-    });
-  });
-}
-
 
 
 export default QuizListPage;

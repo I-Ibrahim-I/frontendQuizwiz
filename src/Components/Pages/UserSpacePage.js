@@ -2,7 +2,7 @@
 /* eslint-disable no-plusplus */
 // eslint-disable-next-line no-unused-vars
 import Navigate from '../Router/Navigate';
-import { clearPage } from '../../utils/render';
+import { clearPage, quizLinkEventListeners} from '../../utils/render';
 import getConnectedUserDetails from '../../utils/auths';
 import trophee from '../../img/badge1.jpg';
 import { readAllQuizzesByUser, deleteOneQuiz } from '../../models/quizzes';
@@ -57,9 +57,7 @@ async function renderUserQuiz() {
   } else {
     allQuizzesByUser.forEach((quiz) => {
       mainListQuiz += `   
-      <a href="/quiz?id=${quiz.quiz_id}" data-uri="/quiz?id=${
-        quiz.quiz_id
-      }" class="text-decoration-none">
+      <a id_quiz="${quiz.quiz_id}" class="quiz_link text-decoration-none">
      <div class="row">
      <div class="card shadow cardMyQuiz">
          <div class="card-body">
@@ -91,6 +89,8 @@ async function renderUserQuiz() {
 
   main.innerHTML = mainListQuiz;
 
+  quizLinkEventListeners();
+
   const linkBadge = document.querySelector('#linkBadge');
 
   linkBadge.addEventListener('click', () => {
@@ -98,6 +98,8 @@ async function renderUserQuiz() {
   });
   attachDeleteEventListeners();
 }
+
+
 
 function attachDeleteEventListeners() {
   const deleteButtons = document.querySelectorAll('.delete-quiz-btn');
