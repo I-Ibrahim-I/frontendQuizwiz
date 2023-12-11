@@ -173,6 +173,19 @@ async function handleLoginClick(e) {
 }
 
 const LoginPage = () => {
+
+  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+
+  if(token){
+    Swal.fire({
+      title: 'Vous etes deja connecter !',
+      icon: 'success',
+      timer: 1000,
+      showConfirmButton: false,
+    });
+
+    Navigate('/userspace');
+  }
   clearPage();
   renderLoginForm();
 };
