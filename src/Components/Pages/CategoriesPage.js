@@ -47,6 +47,7 @@ async function renderCategories() {
       <div class="container-xxl">
         <div class="row mt-3">
   `;
+
   let count = 0;
   const categories = await readAllCategories();
   categories.forEach((category) => {
@@ -55,7 +56,7 @@ async function renderCategories() {
     }
     mainCategory += `
         <div class="col-12 col-lg-3 col-md-6">
-          <a href="/list?label=${category.label}" data-uri="/" class="text-center text-decoration-none category">
+          <a data-label = "${category.label}" class="text-center text-decoration-none category">
             <div class="card highlight-card">
               <img class="custom-img img-fluid" src="${getImageForCategory(
                 category.label,
@@ -75,6 +76,15 @@ async function renderCategories() {
     </div>
   </section>`;
   main.innerHTML = mainCategory;
+
+  document.querySelectorAll('.category').forEach((categoryLink) => {
+    categoryLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      const categoryName = this.getAttribute('data-label');
+      Navigate(`/list?label=${categoryName}`);
+      console.log('Catégorie choisie:', categoryName);
+    });
+  });
 }
 
 function getImageForCategory(categoryLabel) {
