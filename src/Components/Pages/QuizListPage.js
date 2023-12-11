@@ -1,10 +1,9 @@
-
 import { clearPage } from '../../utils/render';
 // eslint-disable-next-line import/named
 // import {categoryName} from "./CategoriesPage";
-import { readAllQuizzesByCategory }  from '../../models/quizzes';
-
- // const numberOfQuizInCategory = 10; // voir dans la db 
+import { readAllQuizzesByCategory } from '../../models/quizzes';
+import Navigate from '../Router/Navigate';
+// const numberOfQuizInCategory = 10; // voir dans la db
 
 let categoryName;
 
@@ -16,14 +15,14 @@ const QuizListPage = async () => {
   renderQuizListInCategory();
 };
 
-   // eslint-disable-next-line no-shadow
-   async function renderQuizListInCategory() {
-    const quizzesInCategory = await readAllQuizzesByCategory(categoryName);
-    const main = document.querySelector('main');
-    let QuizList = '';
-   const cardsInRow = 3 // nbre de carte par row;
-    let counter = 0;
-    QuizList = `
+// eslint-disable-next-line no-shadow
+async function renderQuizListInCategory() {
+  const quizzesInCategory = await readAllQuizzesByCategory(categoryName);
+  const main = document.querySelector('main');
+  let QuizList = '';
+  const cardsInRow = 3; // nbre de carte par row;
+  let counter = 0;
+  QuizList = `
     <section>
         <div class="headerLabel">
             <h2>${categoryName}</h2>
@@ -33,9 +32,10 @@ const QuizListPage = async () => {
     <section>
     <div class="container ">
     <div class="row mt-3 lowPart">
-  `
+  `;
   if (quizzesInCategory.length === 0) {
-    console.log("aucun quiz trouvé");
+    console.log('aucun quiz trouvé');
+
     QuizList += `   
     <div class="alert alert-light text-center alertQuizListPage" role="alert">
     <p>Aucun quiz n'a été créé pour cette catégorie.
@@ -44,18 +44,18 @@ const QuizListPage = async () => {
   </div>
  `;
   } else {
-  quizzesInCategory.forEach(q => {
-    if(counter === cardsInRow){ 
-      console.log("COUNTER:", counter);
-      QuizList+=  `
+    quizzesInCategory.forEach((q) => {
+      if (counter === cardsInRow) {
+        console.log('COUNTER:', counter);
+        QuizList += `
       </div><div class="row mt-3 lowPart">
-    `
-    counter = 0;
-  }
-  
-    QuizList += `
+    `;
+        counter = 0;
+      }
+
+      QuizList += `
     <div class="col-12 col-lg-3 col-md-6 mt-3">
-    <a href="/quiz?id=${q.quiz_id}" data-uri="/quiz?id=${q.quiz_id}" class="text-decoration-none">
+    <a data-quiz-id="${q.quiz_id}" class="quiz-link text-decoration-none">
         <div class="card cardQuizzes  style="width: 10rem;">
             <div class="card-body">
                <h5 class="card-title">${q.title}</h5>
@@ -65,23 +65,31 @@ const QuizListPage = async () => {
         </a>
         </div>
   `;
-   // eslint-disable-next-line no-plusplus
-   counter++;
-   console.log("compteur apres incrementation", counter);
-    
-  });
-}
-QuizList += `
+      // eslint-disable-next-line no-plusplus
+      counter++;
+      console.log('compteur apres incrementation', counter);
+    });
+  }
+  QuizList += `
 
 </div>
 </div>
 </section>
-`
+`;
+
+
+
   main.innerHTML = QuizList;
-    // eslint-disable-next-line no-console
-    console.log('Categorie:');
+  
+  document.querySelectorAll('.quiz-link').forEach((quizLink) => {
+    quizLink.addEventListener('click', function(e) {
+      e.preventDefault(); 
+      const quizId = this.getAttribute('data-quiz-id');
+      Navigate(`/quiz?id=${quizId}`);
+    });
+  });
 
-  }
-
+  console.log('Categorie:');
+}
 
 export default QuizListPage;
