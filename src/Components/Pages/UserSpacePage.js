@@ -111,16 +111,16 @@ function attachDeleteEventListeners() {
         if (!reponse.ok) {
           message.className = 'text-danger';
           message.innerHTML = `Votre quiz n'a pas été supprimé`;
-          Navigate('/login');
+      
         } else {
           message.className = 'text-success';
           message.innerHTML = `Votre quiz a été supprimé`;
-
-          Navigate('/register');
         }
+
+        Navigate('/userspace')
         renderUserQuiz();
       } catch (error) {
-        Navigate('/login');
+        Navigate('/categories');
       }
     });
   });
