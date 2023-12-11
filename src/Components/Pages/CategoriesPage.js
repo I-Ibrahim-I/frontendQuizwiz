@@ -76,11 +76,16 @@ async function renderCategories() {
     </div>
   </section>`;
   main.innerHTML = mainCategory;
+  categoryEventListeners ();
+}
 
-  document.querySelectorAll('.category').forEach((categoryLink) => {
-    categoryLink.addEventListener('click', function(e) {
-      e.preventDefault();
-      const categoryName = this.getAttribute('data-label');
+function categoryEventListeners (){
+  const btnCategory = document.querySelectorAll('.category');
+
+  btnCategory.forEach((categoryLink) => {
+    categoryLink.addEventListener('click', (e) => {
+      e.preventDefault(); 
+      const categoryName = e.currentTarget.getAttribute('data-label');
       Navigate(`/list?label=${categoryName}`);
       console.log('Catégorie choisie:', categoryName);
     });

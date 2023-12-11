@@ -15,6 +15,8 @@ const QuizListPage = async () => {
   renderQuizListInCategory();
 };
 
+
+
 // eslint-disable-next-line no-shadow
 async function renderQuizListInCategory() {
   const quizzesInCategory = await readAllQuizzesByCategory(categoryName);
@@ -77,19 +79,25 @@ async function renderQuizListInCategory() {
 </section>
 `;
 
-
-
   main.innerHTML = QuizList;
+  quizLinkEventListeners ()
+  console.log('Categorie:');
   
-  document.querySelectorAll('.quiz-link').forEach((quizLink) => {
-    quizLink.addEventListener('click', function(e) {
+}
+
+function quizLinkEventListeners (){
+  const btnCategory = document.querySelectorAll('.quiz-link');
+  btnCategory.forEach((quizLink) => {
+    quizLink.addEventListener('click', (e) =>{
       e.preventDefault(); 
-      const quizId = this.getAttribute('data-quiz-id');
+      const quizId = e.currentTarget.getAttribute('data-quiz-id');
+      console.log("helloworld");
+      console.log(quizId);
       Navigate(`/quiz?id=${quizId}`);
     });
   });
-
-  console.log('Categorie:');
 }
+
+
 
 export default QuizListPage;
