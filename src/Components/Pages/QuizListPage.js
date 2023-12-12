@@ -1,5 +1,5 @@
 import { clearPage } from '../../utils/render';
- import quizLinkEventListeners from '../../utils/quiz';
+import quizLinkEventListeners from '../../utils/quiz';
 // eslint-disable-next-line import/named
 // import {categoryName} from "./CategoriesPage";
 import { readAllQuizzesByCategory } from '../../models/quizzes';
@@ -44,6 +44,9 @@ async function renderQuizListInCategory() {
     </p>
   </div>
  `;
+
+    const btnCreateQuiz = document.getElementById('createQuiz');
+    btnCreateQuiz.addEventListener('click', renderCreateQuiz);
   } else {
     quizzesInCategory.forEach((q) => {
       if (counter === cardsInRow) {
@@ -77,17 +80,7 @@ async function renderQuizListInCategory() {
 </div>
 </section>
 `;
-
-console.log('debut btnCreateQuiz');
   main.innerHTML = QuizList;
-
-const btnCreateQuiz = document.getElementById('createQuiz');
-if(btnCreateQuiz){
-  btnCreateQuiz.addEventListener('click', renderCreateQuiz);
- console.log('fin btnCreateQuiz');
-
-}
- 
   quizLinkEventListeners();
   console.log('Categorie:');
 }
