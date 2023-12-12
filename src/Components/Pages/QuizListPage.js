@@ -79,12 +79,11 @@ async function renderQuizListInCategory() {
 `;
 
 console.log('debut btnCreateQuiz');
+  main.innerHTML = QuizList;
 
- const btnCreateQuiz = document.getElementById('createQuiz');
+const btnCreateQuiz = document.getElementById('createQuiz');
  btnCreateQuiz.addEventListener('click', renderCreateQuiz);
  console.log('fin btnCreateQuiz');
-
-  main.innerHTML = QuizList;
   quizLinkEventListeners();
   console.log('Categorie:');
 }
