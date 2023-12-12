@@ -17,10 +17,10 @@ const HomePage = () => {
           <div class="container my-5 py-5">
             <div class="row">
             <div class="col-md-12 col-12 col-lg-6 text-center d-flex align-items-center">
-                <h1  >
+                <h1>
                 Prêt à explorer l'univers des quiz ? Découvrez une multitude de catégories et mettez vos connaissances à l'épreuve !
                 <div>
-                <a class="btn btn-style" id = "categorie">Explorer les catégories</a> 
+                <a  id = "categorie" class="btn btn-style"> Explorer les catégories</a> 
                 </div>
                 </h1>
                 </div>
@@ -59,6 +59,7 @@ const HomePage = () => {
 };
 
 function renderCategorie(){
+  console.log('hello world');
   Navigate('/login');
 }
 
