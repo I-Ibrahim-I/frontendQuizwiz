@@ -82,8 +82,12 @@ console.log('debut btnCreateQuiz');
   main.innerHTML = QuizList;
 
 const btnCreateQuiz = document.getElementById('createQuiz');
- btnCreateQuiz.addEventListener('click', renderCreateQuiz);
+if(btnCreateQuiz){
+  btnCreateQuiz.addEventListener('click', renderCreateQuiz);
  console.log('fin btnCreateQuiz');
+
+}
+ 
   quizLinkEventListeners();
   console.log('Categorie:');
 }
