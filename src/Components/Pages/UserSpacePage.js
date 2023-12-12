@@ -1,12 +1,15 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-plusplus */
 // eslint-disable-next-line no-unused-vars
+import Swal from 'sweetalert2';
 import Navigate from '../Router/Navigate';
-import { clearPage, quizLinkEventListeners } from '../../utils/render';
+import { clearPage } from '../../utils/render';
 import getConnectedUserDetails from '../../utils/auths';
 import trophee from '../../img/badge1.jpg';
 import { readAllQuizzesByUser, deleteOneQuiz } from '../../models/quizzes';
 import { readAllBadgesByUser } from '../../models/badges';
+import quizLinkEventListeners from '../../utils/quiz';
+
 
 const main = document.querySelector('main');
 let userID;
@@ -57,7 +60,9 @@ async function renderUserQuiz() {
   } else {
     allQuizzesByUser.forEach((quiz) => {
       mainListQuiz += `   
-      <a id_quiz="${quiz.quiz_id}" class=".quiz_link text-decoration-none">
+      <a href="/quiz?id=${quiz.quiz_id}" data-uri="/quiz?id=${
+        quiz.quiz_id
+      }" class="text-decoration-none">
      <div class="row">
      <div class="card shadow cardMyQuiz">
          <div class="card-body">
@@ -88,6 +93,7 @@ async function renderUserQuiz() {
     </section>`;
 
   main.innerHTML = mainListQuiz;
+
   quizLinkEventListeners();
 
   const linkBadge = document.querySelector('#linkBadge');
@@ -105,22 +111,27 @@ function attachDeleteEventListeners() {
     btn.addEventListener('click', async (e) => {
       e.preventDefault();
       const deleteQuiz = e.target.dataset.id;
-      const message = document.querySelector('#deletedResponse');
       try {
         const reponse = await deleteOneQuiz(deleteQuiz);
         if (!reponse.ok) {
-          message.className = 'text-danger';
-          message.innerHTML = `Votre quiz n'a pas été supprimé`;
-      
+          Swal.fire({
+            title: 'Un problème est survenu lors de votre opération',
+            icon: 'error',
+            showConfirmButton: true,
+          });
+          
         } else {
-          message.className = 'text-success';
-          message.innerHTML = `Votre quiz a été supprimé`;
+          Swal.fire({
+            title: 'Votre quiz a bien été supprimé',
+            icon: 'error',
+            showConfirmButton: true,
+          });
+          
         }
-
-        Navigate('/userspace')
+        Navigate('/userSpace');
         renderUserQuiz();
       } catch (error) {
-        Navigate('/categories');
+        Navigate('/userSpace');
       }
     });
   });
@@ -171,7 +182,7 @@ async function renderUserBadges() {
       mainUserBadges += ` <div class="col-12 col-lg-3 col-md-6">
                 <img src="${getImageForBadge(badge.label)}"  alt="${badge.label}" class="img-fluid">
               </div>`;
-      count++;
+      count += 1;
     });
     mainUserBadges += `
         </div>

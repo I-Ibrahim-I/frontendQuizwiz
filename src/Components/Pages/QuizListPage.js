@@ -1,4 +1,5 @@
-import { clearPage,quizLinkEventListeners } from '../../utils/render';
+import { clearPage} from '../../utils/render';
+import quizLinkEventListeners from '../../utils/quiz';
 // eslint-disable-next-line import/named
 // import {categoryName} from "./CategoriesPage";
 import { readAllQuizzesByCategory } from '../../models/quizzes';
@@ -14,8 +15,6 @@ const QuizListPage = async () => {
   console.log('Le labell', categoryName);
   renderQuizListInCategory();
 };
-
-
 
 // eslint-disable-next-line no-shadow
 async function renderQuizListInCategory() {
@@ -37,7 +36,6 @@ async function renderQuizListInCategory() {
   `;
   if (quizzesInCategory.length === 0) {
     console.log('aucun quiz trouvé');
-
     QuizList += `   
     <div class="alert alert-light text-center alertQuizListPage" role="alert">
     <p>Aucun quiz n'a été créé pour cette catégorie.
@@ -57,7 +55,7 @@ async function renderQuizListInCategory() {
 
       QuizList += `
     <div class="col-12 col-lg-3 col-md-6 mt-3">
-    <a id_quiz="${q.quiz_id}" class="quiz_link text-decoration-none">
+    <a href="/quiz?id=${q.quiz_id}" data-uri="/quiz?id=${q.quiz_id}" class="text-decoration-none">
         <div class="card cardQuizzes  style="width: 10rem;">
             <div class="card-body">
                <h5 class="card-title">${q.title}</h5>
@@ -78,12 +76,9 @@ async function renderQuizListInCategory() {
 </div>
 </section>
 `;
-
   main.innerHTML = QuizList;
-  quizLinkEventListeners ()
+  quizLinkEventListeners();
   console.log('Categorie:');
-  
 }
-
 
 export default QuizListPage;

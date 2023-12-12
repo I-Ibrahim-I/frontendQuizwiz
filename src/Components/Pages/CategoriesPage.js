@@ -2,7 +2,6 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable consistent-return */
 // eslint-disable-next-line no-unused-vars
-import Navigate from '../Router/Navigate';
 import { clearPage } from '../../utils/render';
 import scienceImage from '../../img/science.jpg';
 import historyImage from '../../img/history.jpg';
@@ -17,6 +16,7 @@ import geographyImage from '../../img/georaphy.jpg';
 import sportImage from '../../img/sport.jpg';
 import otherImage from '../../img/other.jpg';
 import { readAllCategories } from '../../models/quizzes';
+import Navigate from '../Router/Navigate';
 
 const CategoriesPage = async () => {
   clearPage();
@@ -47,7 +47,6 @@ async function renderCategories() {
       <div class="container-xxl">
         <div class="row mt-3">
   `;
-
   let count = 0;
   const categories = await readAllCategories();
   categories.forEach((category) => {
@@ -56,7 +55,7 @@ async function renderCategories() {
     }
     mainCategory += `
         <div class="col-12 col-lg-3 col-md-6">
-          <a data-label = "${category.label}" class="text-center text-decoration-none category">
+          <a category_label = "${category.label}"class="text-center text-decoration-none category">
             <div class="card highlight-card">
               <img class="custom-img img-fluid" src="${getImageForCategory(
                 category.label,
@@ -68,7 +67,7 @@ async function renderCategories() {
           </a>
         </div>
       `;
-    count++;
+    count += 1;
   });
 
   mainCategory += `
@@ -85,7 +84,7 @@ function categoryEventListeners (){
   btnCategory.forEach((categoryLink) => {
     categoryLink.addEventListener('click', (e) => {
       e.preventDefault(); 
-      const categoryName = e.currentTarget.getAttribute('data-label');
+      const categoryName = e.currentTarget.getAttribute('category_label');
       Navigate(`/list?label=${categoryName}`);
       console.log('Catégorie choisie:', categoryName);
     });
