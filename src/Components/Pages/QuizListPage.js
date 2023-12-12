@@ -1,9 +1,9 @@
 import { clearPage } from '../../utils/render';
-import quizLinkEventListeners from '../../utils/quiz';
+// import quizLinkEventListeners from '../../utils/quiz';
 // eslint-disable-next-line import/named
 // import {categoryName} from "./CategoriesPage";
 import { readAllQuizzesByCategory } from '../../models/quizzes';
-import Navigate from '../Router/Navigate';
+// import Navigate from '../Router/Navigate';
 
 // const numberOfQuizInCategory = 10; // voir dans la db
 
