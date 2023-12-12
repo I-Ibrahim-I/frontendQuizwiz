@@ -4,6 +4,7 @@
 
 import image1 from '../../img/homePage.png';
 import image2 from '../../img/homePage2.png';
+import Navigate from '../Router/Navigate';
 
 // ----------------------------------------- HOME PAGE MIDDLEWARE  -----------------------------------------
 
