@@ -55,7 +55,7 @@ async function renderQuizListInCategory() {
 
       QuizList += `
     <div class="col-12 col-lg-3 col-md-6 mt-3">
-    <a id_quiz="${q.quiz_id}" class="text-decoration-none">
+    <a id_quiz="${q.quiz_id}" class="quiz_link text-decoration-none">
         <div class="card cardQuizzes  style="width: 10rem;">
             <div class="card-body">
                <h5 class="card-title">${q.title}</h5>
