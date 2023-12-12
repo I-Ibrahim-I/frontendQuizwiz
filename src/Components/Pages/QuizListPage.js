@@ -86,6 +86,7 @@ async function renderQuizListInCategory() {
 }
 
 function renderCreateQuiz() {
+  console.log('je suis dans la page create quiz mrc')
   Navigate('/create');
 }
 export default QuizListPage;
