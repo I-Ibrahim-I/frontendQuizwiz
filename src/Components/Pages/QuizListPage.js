@@ -1,9 +1,9 @@
 import { clearPage } from '../../utils/render';
-// import quizLinkEventListeners from '../../utils/quiz';
+ import quizLinkEventListeners from '../../utils/quiz';
 // eslint-disable-next-line import/named
 // import {categoryName} from "./CategoriesPage";
 import { readAllQuizzesByCategory } from '../../models/quizzes';
-// import Navigate from '../Router/Navigate';
+import Navigate from '../Router/Navigate';
 
 // const numberOfQuizInCategory = 10; // voir dans la db
 
@@ -78,15 +78,19 @@ async function renderQuizListInCategory() {
 </section>
 `;
 
-  // const btnCreateQuiz = document.getElementById('createQuiz');
-  // btnCreateQuiz.addEventListener('click', renderCreateQuiz);
-   main.innerHTML = QuizList;
-  // quizLinkEventListeners();
+console.log('debut btnCreateQuiz');
+
+ const btnCreateQuiz = document.getElementById('createQuiz');
+ btnCreateQuiz.addEventListener('click', renderCreateQuiz);
+ console.log('fin btnCreateQuiz');
+
+  main.innerHTML = QuizList;
+  quizLinkEventListeners();
   console.log('Categorie:');
 }
 
-// function renderCreateQuiz() {
-//   console.log('je suis dans la page create quiz mrc')
-//   Navigate('/create');
-// }
+function renderCreateQuiz() {
+  console.log('je suis dans la page create quiz mrc');
+  Navigate('/create');
+}
 export default QuizListPage;
