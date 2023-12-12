@@ -19,7 +19,7 @@ const HomePage = () => {
                 <h1  >
                 Prêt à explorer l'univers des quiz ? Découvrez une multitude de catégories et mettez vos connaissances à l'épreuve !
                 <div>
-                <a class="btn btn-style" href="/categories" data-uri="">Explorer les catégories</a> <!--href ou data-uri????-->
+                <a class="btn btn-style" id = "categorie">Explorer les catégories</a> <!--href ou data-uri????-->
                 </div>
                 </h1>
                 </div>
@@ -52,6 +52,13 @@ const HomePage = () => {
           </div>
       </section>
         </section>`;
+
+        const btnCategory = document.getElementById('categorie');
+        btnCategory.addEventListener('click', renderCategorie);
 };
+
+function renderCategorie(){
+  Navigate('/categories');
+}
 
 export default HomePage;
