@@ -19,7 +19,7 @@ const HomePage = () => {
                 <h1  >
                 Prêt à explorer l'univers des quiz ? Découvrez une multitude de catégories et mettez vos connaissances à l'épreuve !
                 <div>
-                <a class="btn btn-style" id = "categorie">Explorer les catégories</a> <!--href ou data-uri????-->
+                <a class="btn btn-style" id = "categorie">Explorer les catégories</a> 
                 </div>
                 </h1>
                 </div>
@@ -58,7 +58,7 @@ const HomePage = () => {
 };
 
 function renderCategorie(){
-  Navigate('/categories');
+  Navigate('/login');
 }
 
 export default HomePage;
