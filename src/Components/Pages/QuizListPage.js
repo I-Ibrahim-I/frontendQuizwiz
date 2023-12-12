@@ -1,8 +1,9 @@
-import { clearPage} from '../../utils/render';
+import { clearPage } from '../../utils/render';
 import quizLinkEventListeners from '../../utils/quiz';
 // eslint-disable-next-line import/named
 // import {categoryName} from "./CategoriesPage";
 import { readAllQuizzesByCategory } from '../../models/quizzes';
+import Navigate from '../Router/Navigate';
 
 // const numberOfQuizInCategory = 10; // voir dans la db
 
@@ -39,7 +40,7 @@ async function renderQuizListInCategory() {
     QuizList += `   
     <div class="alert alert-light text-center alertQuizListPage" role="alert">
     <p>Aucun quiz n'a été créé pour cette catégorie.
-    <a href="/create" class="alert-link">Sois le premier à en créer un !</a>
+    <a id = "createQuiz" class="alert-link">Sois le premier à en créer un !</a>
     </p>
   </div>
  `;
@@ -76,9 +77,15 @@ async function renderQuizListInCategory() {
 </div>
 </section>
 `;
+
+  const btnCreateQuiz = document.getElementById('createQuiz');
+  btnCreateQuiz.addEventListener('click', renderCreateQuiz);
   main.innerHTML = QuizList;
   quizLinkEventListeners();
   console.log('Categorie:');
 }
 
+function renderCreateQuiz() {
+  Navigate('create');
+}
 export default QuizListPage;
