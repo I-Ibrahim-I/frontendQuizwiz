@@ -10,7 +10,6 @@ import { readAllQuizzesByUser, deleteOneQuiz } from '../../models/quizzes';
 import { readAllBadgesByUser } from '../../models/badges';
 import quizLinkEventListeners from '../../utils/quiz';
 
-
 const main = document.querySelector('main');
 let userID;
 let userName;
@@ -60,9 +59,7 @@ async function renderUserQuiz() {
   } else {
     allQuizzesByUser.forEach((quiz) => {
       mainListQuiz += `   
-      <a href="/quiz?id=${quiz.quiz_id}" data-uri="/quiz?id=${
-        quiz.quiz_id
-      }" class="text-decoration-none">
+      <a id_quiz="${quiz.quiz_id}" class="text-decoration-none">
      <div class="row">
      <div class="card shadow cardMyQuiz">
          <div class="card-body">
@@ -119,14 +116,12 @@ function attachDeleteEventListeners() {
             icon: 'error',
             showConfirmButton: true,
           });
-          
         } else {
           Swal.fire({
             title: 'Votre quiz a bien été supprimé',
             icon: 'error',
             showConfirmButton: true,
           });
-          
         }
         Navigate('/userSpace');
         renderUserQuiz();
