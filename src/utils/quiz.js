@@ -1,6 +1,6 @@
 import Navigate from '../Components/Router/Navigate';
 
-export default async function quizLinkEventListeners() {
+export default function quizLinkEventListeners() {
   const btnCategory = document.querySelectorAll('.quiz_link');
   btnCategory.forEach((quizLink) => {
     quizLink.addEventListener('click', (e) => {
