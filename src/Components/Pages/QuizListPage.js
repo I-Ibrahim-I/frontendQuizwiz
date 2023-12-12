@@ -86,6 +86,6 @@ async function renderQuizListInCategory() {
 }
 
 function renderCreateQuiz() {
-  Navigate('create');
+  Navigate('/create');
 }
 export default QuizListPage;
