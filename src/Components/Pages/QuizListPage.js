@@ -78,15 +78,15 @@ async function renderQuizListInCategory() {
 </section>
 `;
 
-  const btnCreateQuiz = document.getElementById('createQuiz');
-  btnCreateQuiz.addEventListener('click', renderCreateQuiz);
-  main.innerHTML = QuizList;
-  quizLinkEventListeners();
+  // const btnCreateQuiz = document.getElementById('createQuiz');
+  // btnCreateQuiz.addEventListener('click', renderCreateQuiz);
+   main.innerHTML = QuizList;
+  // quizLinkEventListeners();
   console.log('Categorie:');
 }
 
-function renderCreateQuiz() {
-  console.log('je suis dans la page create quiz mrc')
-  Navigate('/create');
-}
+// function renderCreateQuiz() {
+//   console.log('je suis dans la page create quiz mrc')
+//   Navigate('/create');
+// }
 export default QuizListPage;

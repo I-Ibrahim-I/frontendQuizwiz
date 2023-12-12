@@ -55,7 +55,7 @@ async function renderCategories() {
     }
     mainCategory += `
         <div class="col-12 col-lg-3 col-md-6">
-          <a category_label = "${category.label}"class="text-center text-decoration-none category">
+          <a category_label = "${category.label}"class="category text-center text-decoration-none ">
             <div class="card highlight-card">
               <img class="custom-img img-fluid" src="${getImageForCategory(
                 category.label,
