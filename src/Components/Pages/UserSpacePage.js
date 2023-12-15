@@ -1,20 +1,28 @@
-/* eslint-disable consistent-return */
-/* eslint-disable no-plusplus */
-// eslint-disable-next-line no-unused-vars
 import Swal from 'sweetalert2';
 import Navigate from '../Router/Navigate';
 import { clearPage } from '../../utils/render';
-import getConnectedUserDetails from '../../utils/auths';
-import trophee from '../../img/badge1.jpg';
+import { getConnectedUserDetails, checkAuthentication } from '../../utils/auths';
 import { readAllQuizzesByUser, deleteOneQuiz } from '../../models/quizzes';
-import { readAllBadgesByUser } from '../../models/badges';
+import { readAllBadgesByUser, readAllBadges } from '../../models/badges';
 import quizLinkEventListeners from '../../utils/quiz';
+import medalGold from '../../img/medal_gold.png';
+import medalSilver from '../../img/medal_silver.png';
+import medalBronze from '../../img/medal_bronze.png';
+import medalPlatine from '../../img/medal.png';
 
 const main = document.querySelector('main');
 let userID;
 let userName;
 
 const UserSpacePage = async () => {
+  const isConnected = await checkAuthentication();
+
+  if(!isConnected){
+    Navigate('/login');
+    return;
+
+  }
+
   await getConnectedUserDetails().then((userDetails) => {
     console.log(userDetails);
     userID = userDetails.userID;
@@ -25,9 +33,8 @@ const UserSpacePage = async () => {
 
 async function renderUserQuiz() {
   clearPage();
-  let mainListQuiz = '';
   const allQuizzesByUser = await readAllQuizzesByUser(userID);
-  mainListQuiz = `
+  let mainListQuiz = `
     <section>
       <div class="alert color-purple">
         <p>Bienvenue ${userName}</p>
@@ -59,7 +66,7 @@ async function renderUserQuiz() {
   } else {
     allQuizzesByUser.forEach((quiz) => {
       mainListQuiz += `   
-      <a id_quiz="${quiz.quiz_id}" class="quiz_link text-decoration-none">
+      <a id_quiz="${quiz.quiz_id}" class=" quiz text-decoration-none" style="cursor: pointer">
      <div class="row">
      <div class="card shadow cardMyQuiz">
          <div class="card-body">
@@ -68,7 +75,7 @@ async function renderUserQuiz() {
                  <div class="col-md-4">
                     ${quiz.title}
                  </div>
-                 <div class="col-md-4 text-center">
+                 <div class="col-md-4 text-center" >
                  ${new Date(quiz.date_creation).toLocaleDateString()}
                  </div>
                  <div class="col-md-4 text-end">
@@ -91,14 +98,13 @@ async function renderUserQuiz() {
 
   main.innerHTML = mainListQuiz;
 
-  quizLinkEventListeners();
-
   const linkBadge = document.querySelector('#linkBadge');
 
   linkBadge.addEventListener('click', () => {
     renderUserBadges();
   });
   attachDeleteEventListeners();
+  quizLinkEventListeners();
 }
 
 function attachDeleteEventListeners() {
@@ -106,24 +112,27 @@ function attachDeleteEventListeners() {
 
   deleteButtons.forEach((btn) => {
     btn.addEventListener('click', async (e) => {
+      e.stopPropagation(); // va empêcher d'autres gestionnaires d'événements de s'éxecuter
       e.preventDefault();
       const deleteQuiz = e.target.dataset.id;
       try {
         const reponse = await deleteOneQuiz(deleteQuiz);
         if (!reponse.ok) {
           Swal.fire({
-            title: 'Un problème est survenu lors de votre opération',
+            title: `Un problème est survenu lors de l'opération`,
             icon: 'error',
+            timer: 1000,
             showConfirmButton: true,
           });
         } else {
           Swal.fire({
             title: 'Votre quiz a bien été supprimé',
-            icon: 'error',
-            showConfirmButton: true,
+            icon: 'success',
+            timer: 1000,
+            showConfirmButton: false,
           });
         }
-        Navigate('/userSpace');
+
         renderUserQuiz();
       } catch (error) {
         Navigate('/userSpace');
@@ -134,6 +143,7 @@ function attachDeleteEventListeners() {
 
 async function renderUserBadges() {
   clearPage();
+  const allBadges = await readAllBadges();
   const allBadgesByUser = await readAllBadgesByUser(userID);
   let mainUserBadges = `
     <section>
@@ -148,7 +158,7 @@ async function renderUserBadges() {
                 <a class="nav-link styleLinkHover" id="linkListQuiz" >Mes quiz</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link styleLink styleLinkHover" id="linkBadge">Mes badges</a>
+                <a class="nav-link styleLink styleLinkHover" id="linkBadge" >Mes badges</a>
               </li>
             </ul>
           </div>
@@ -158,45 +168,89 @@ async function renderUserBadges() {
           <div class="container-xxl justify-content-center pt-5">
       `;
 
-  if (allBadgesByUser.length === 0) {
-    mainUserBadges += `   
-              <div class="alert alert-light text-center">
-              <p>Vous n'avez pas encore gagné de badge !</p>
-            </div>`;
-  } else {
-    mainUserBadges += `
+  mainUserBadges += `
           
             <div class="card shadow-lg">
               <div class="card-body p-5"> 
               <div class="row mt-3">`;
-    let count = 0;
-    allBadgesByUser.forEach((badge) => {
-      if (count % 3 === 0 && count !== 0) {
-        mainUserBadges += ' </div>  <div class="row mt-3">';
+  let count = 0;
+  allBadges.forEach((badge) => {
+    let isWinned = false;
+    console.log('allBadgesByUser', allBadgesByUser);
+    console.log('badge', badge);
+    if (count % 4 === 0 && count !== 0) {
+      mainUserBadges += ' </div>  <div class="row mt-3">';
+    }
+    console.log('allBadgesByUser', allBadgesByUser);
+
+    allBadgesByUser.forEach((b) => {
+      if (b.badge_id === badge.badge_id) {
+        isWinned = true;
       }
-      mainUserBadges += ` <div class="col-12 col-lg-3 col-md-6">
-                <img src="${getImageForBadge(badge.label)}"  alt="${badge.label}" class="img-fluid">
-              </div>`;
-      count += 1;
     });
-    mainUserBadges += `
+    if (isWinned === true) {
+      mainUserBadges += ` <div class="col-12 col-lg-3 col-md-6">
+        <img src="${getImageForBadge(badge.label)}"  alt="${
+        badge.label
+      }" class="img-fluid badge-image" data-badge="${badge.label}">
+      </div>`;
+    } else {
+      mainUserBadges += ` <div class="col-12 col-lg-3 col-md-6">
+      <img src="${getImageForBadge(badge.label)}"  alt="${
+        badge.label
+      }" class="img-fluid badges_disabled badge-image" data-badge="${badge.label}">
+    </div>`;
+    }
+    count += 1;
+  });
+  mainUserBadges += `
         </div>
             </div>
           </div>
         </div>
       </div>
     </section>`;
-  }
 
   main.innerHTML = mainUserBadges;
-  const linkListQuiz = document.querySelector('#linkListQuiz');
+  const badgeImages = document.querySelectorAll('.badge-image');
+  badgeImages.forEach((badgeImage) => {
+    badgeImage.addEventListener('click', () => {
+      const badgeLabel = badgeImage.dataset.badge;
+      console.log(badgeLabel, 'badgeLabel');
+      showBadgeInfo(badgeLabel);
+    });
+  });
 
+  const linkListQuiz = document.querySelector('#linkListQuiz');
   linkListQuiz.addEventListener('click', () => {
     renderUserQuiz();
   });
 }
 
+function showBadgeInfo(badgeLabel) {
+  Swal.fire({
+    title: badgeLabel,
+    text: `Gagne ce badge après avoir accumulé ${getPointForBadge(badgeLabel)} points`,
+    imageUrl: getImageForBadge(badgeLabel),
+    imageAlt: badgeLabel,
+    imageWidth: 150,
+    imageHeight: 150,
+    confirmButtonText: 'Fermer',
+  });
+}
+
+function getPointForBadge(badgeLabel) {
+  if (badgeLabel === `Médaille d'or`) return 600;
+  if (badgeLabel === `Médaille de bronze`) return 200;
+  if (badgeLabel === `Médaille d'argent`) return 400;
+  if (badgeLabel === `Médaille de platine`) return 800;
+  return medalPlatine;
+}
 function getImageForBadge(badgeLabel) {
-  if (badgeLabel === `Trophée d'or`) return trophee;
+  if (badgeLabel === `Médaille d'or`) return medalGold;
+  if (badgeLabel === `Médaille de bronze`) return medalBronze;
+  if (badgeLabel === `Médaille d'argent`) return medalSilver;
+  if (badgeLabel === `Médaille de platine`) return medalPlatine;
+  return medalPlatine;
 }
 export default UserSpacePage;

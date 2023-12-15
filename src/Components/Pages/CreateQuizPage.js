@@ -1,16 +1,9 @@
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable no-const-assign */
-/* eslint-disable consistent-return */
-/* eslint-disable no-alert */
-/* eslint-disable no-restricted-globals */
-/* eslint-disable no-plusplus */
-/* eslint-disable no-console */
 import Swal from 'sweetalert2';
 
 import Navigate from '../Router/Navigate';
 import { clearPage } from '../../utils/render';
-import getConnectedUserDetails from '../../utils/auths';
 import { readAllCategories, addOneQuiz } from '../../models/quizzes';
+import { checkAuthentication } from '../../utils/auths';
 
 let questions = [];
 let questionCount = 0;
@@ -20,18 +13,25 @@ const numberBadAnswer = 3;
 let title;
 let category;
 let quizToBeCreated;
-let userID;
 const main = document.querySelector('main');
 
+checkAuthentication('/create');
+
 const CreateQuizPage = async () => {
+  const isConnected = await checkAuthentication();
+
+  if(!isConnected){
+    Navigate('/login');
+    return;
+
+  }
+  
   clearPage();
-  const currentUser = await getConnectedUserDetails();
-  userID = currentUser.userID;
   questions = [];
   numberOfQuestions = 0;
   questionCount = 0;
   currentCount = 0;
-  await renderFormInfoQuiz(); 
+  await renderFormInfoQuiz();
   attachEventListenersFromInfoQuiz();
 };
 
@@ -105,8 +105,8 @@ async function renderFormInfoQuiz() {
 	</div>
 </section>`;
   main.innerHTML = MainFormInfoQuiz;
-  questionCount++;
-  currentCount++;
+  questionCount += 1;
+  currentCount += 1;
 }
 
 function attachEventListenersFromInfoQuiz() {
@@ -124,7 +124,7 @@ function attachEventListenersFromInfoQuiz() {
     numberOfQuestions = parseInt(document.querySelector('#numberQuestion').value, 10);
     console.log(numberOfQuestions);
     console.log('titre', title.value);
-    if (!isNaN(numberOfQuestions) && numberOfQuestions > 0 && title.value && category.value)
+    if (!Number.isNaN(numberOfQuestions) && numberOfQuestions > 0 && title.value && category.value)
       renderQuizQuestions();
     else showError('Tous les champs du formulaire sont obligatoires');
   });
@@ -137,9 +137,7 @@ function renderQuizQuestions() {
     <div class="container-xxl justify-content-center pt-5">
       <div class="card shadow-lg">
         <div class="card-body p-5">
-        <h2 class="fs-4 card-title text-center mb-4">Question ${questionCount}</h2>
-       <!-- <h2 class="fs-4 fw-bold mb-4 text-end">${title.value}</h2> -->
-         
+        <h2 class="fs-4 card-title text-center mb-4">Question ${questionCount}</h2>         
           <form>
             <div class="row mb-3">
               <div class="col">
@@ -159,7 +157,7 @@ function renderQuizQuestions() {
               </div>
             </div>`;
   let j = 2;
-  for (let index = 0; index < numberBadAnswer; index++) {
+  for (let index = 0; index < numberBadAnswer; index += 1) {
     quizHTML += `
     <div class="row mb-3">
       <div class="col">
@@ -169,12 +167,12 @@ function renderQuizQuestions() {
         }" required autofocus>
       </div>
     </div>`;
-    j++;
+    j += 1;
   }
   if (questionCount === 1) {
     quizHTML += `
     <div class="mb-3 d-flex justify-content-end">
-    <button type="submit" class="btn btn-primary " id="previousQuestion" style="display: none;">Précédent</button>
+    <button type="submit" class="btn btn-primary " id="previousQuestion" style="display: none">Précédent</button>
       <button type="submit" class="btn btn-outline-primary " id="nextQuestion">Suivant</button>
     </div>
   </form>
@@ -218,11 +216,12 @@ function attachEventListenersQuizQuestions() {
   previousQuestion.addEventListener('click', (e) => {
     e.preventDefault();
     if (questionCount > 1) {
-      questionCount--;
+      questionCount -= 1;
       renderQuizQuestions();
     }
   });
 
+  // eslint-disable-next-line consistent-return
   nextQuestion.addEventListener('click', async (e) => {
     e.preventDefault();
     if (questionCount <= numberOfQuestions) {
@@ -230,23 +229,17 @@ function attachEventListenersQuizQuestions() {
       const badAnswers = document.querySelectorAll('.badAnswers');
       const goodAnswer = document.querySelector('#goodAnswer');
 
-      if (!question.value || !goodAnswer.value) {
-        showError('Tous les champs du formulaire sont obligatoires'); 
-        return renderQuizQuestions();
+      if (!question.value || !goodAnswer.value || [...badAnswers].some((answer) => !answer.value)) {
+        showError('Tous les champs du formulaire sont obligatoires');
+        return renderQuizQuestions;
       }
       console.log('question : ', question.value);
       console.log('goodAnswer : ', goodAnswer.value);
 
-      const answersBad = [];
-      for (const answer of badAnswers) {
-        if (!answer.value) {
-          showError('Tous les champs du formulaire sont obligatoires'); 
-          console.log('erreur');
-          return renderQuizQuestions();
-        }
-        answersBad.push(answer.value);
-      }
-      console.log('on est dans le reste');
+      let answersBad = [];
+
+      answersBad = Array.from(badAnswers).map((answer) => answer.value);
+
       const questAnsw = [question.value, goodAnswer.value, ...answersBad];
 
       console.log('questAnsw : ', questAnsw);
@@ -254,11 +247,11 @@ function attachEventListenersQuizQuestions() {
 
       if (questionCount === currentCount) {
         questions.push(questAnsw);
-        questionCount++;
-        currentCount++;
+        questionCount += 1;
+        currentCount += 1;
       } else {
         questions[questionCount - 1] = questAnsw;
-        questionCount++;
+        questionCount += 1;
       }
 
       if (questionCount <= numberOfQuestions) {
@@ -274,20 +267,17 @@ function attachEventListenersQuizQuestions() {
           cancelButtonText: 'Annuler',
         });
         if (result.isConfirmed) {
-          // hello
-          console.log(userID);
           quizToBeCreated = {
             title: title.value,
             category: category.value,
             questions,
-            currentUser: userID,
           };
           console.log('quizToBeCreated : ', quizToBeCreated);
           await addOneQuiz(quizToBeCreated);
           Navigate('/userSpace');
         } else {
-          questionCount--;
-          currentCount--;
+          questionCount -= 1;
+          currentCount -= 1;
           console.log('current', currentCount);
           return renderQuizQuestions();
         }

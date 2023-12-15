@@ -1,11 +1,8 @@
 import { clearPage } from '../../utils/render';
 import quizLinkEventListeners from '../../utils/quiz';
-// eslint-disable-next-line import/named
-// import {categoryName} from "./CategoriesPage";
 import { readAllQuizzesByCategory } from '../../models/quizzes';
 import Navigate from '../Router/Navigate';
 
-// const numberOfQuizInCategory = 10; // voir dans la db
 
 let categoryName;
 
@@ -17,13 +14,14 @@ const QuizListPage = async () => {
   renderQuizListInCategory();
 };
 
-// eslint-disable-next-line no-shadow
 async function renderQuizListInCategory() {
   const quizzesInCategory = await readAllQuizzesByCategory(categoryName);
   const main = document.querySelector('main');
   let QuizList = '';
-  const cardsInRow = 3; // nbre de carte par row;
+  const cardsInRow = 3; 
   let counter = 0;
+  const numberOfQuiz = quizzesInCategory.length;
+
   QuizList = `
     <section>
         <div class="headerLabel">
@@ -35,18 +33,15 @@ async function renderQuizListInCategory() {
     <div class="container ">
     <div class="row mt-3 lowPart">
   `;
-  if (quizzesInCategory.length === 0) {
+  if (numberOfQuiz === 0) {
     console.log('aucun quiz trouvé');
     QuizList += `   
     <div class="alert alert-light text-center alertQuizListPage" role="alert">
     <p>Aucun quiz n'a été créé pour cette catégorie.
-    <a id = "createQuiz" class="alert-link">Sois le premier à en créer un !</a>
+    <a id = "createQuiz" class="alert-link" style="cursor: pointer">Sois le premier à en créer un !</a>
     </p>
   </div>
  `;
-
-    const btnCreateQuiz = document.getElementById('createQuiz');
-    btnCreateQuiz.addEventListener('click', renderCreateQuiz);
   } else {
     quizzesInCategory.forEach((q) => {
       if (counter === cardsInRow) {
@@ -58,9 +53,9 @@ async function renderQuizListInCategory() {
       }
 
       QuizList += `
-    <div class="col-12 col-lg-3 col-md-6 mt-3">
-    <a id_quiz="${q.quiz_id}" class="quiz_link text-decoration-none">
-        <div class="card cardQuizzes  style="width: 10rem;">
+    <div class="col-12 col-lg-3 mt-3">
+    <a id_quiz = "${q.quiz_id}" class= "quiz text-decoration-none">
+        <div class="card cardQuizzes">
             <div class="card-body">
                <h5 class="card-title">${q.title}</h5>
                 <p class="card-text"> ${q.pseudo}</p>
@@ -69,8 +64,7 @@ async function renderQuizListInCategory() {
         </a>
         </div>
   `;
-      // eslint-disable-next-line no-plusplus
-      counter++;
+      counter+=1;
       console.log('compteur apres incrementation', counter);
     });
   }
@@ -81,12 +75,17 @@ async function renderQuizListInCategory() {
 </section>
 `;
   main.innerHTML = QuizList;
+
+  if (numberOfQuiz === 0) {
+    const btnCreateQuiz = document.getElementById('createQuiz');
+    btnCreateQuiz.addEventListener('click', renderCreateQuiz);
+  }
   quizLinkEventListeners();
   console.log('Categorie:');
 }
 
 function renderCreateQuiz() {
-  console.log('je suis dans la page create quiz mrc');
   Navigate('/create');
 }
+
 export default QuizListPage;

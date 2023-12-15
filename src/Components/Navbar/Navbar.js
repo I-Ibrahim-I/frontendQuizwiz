@@ -1,6 +1,8 @@
 // eslint-disable-next-line no-unused-vars
 import { Navbar as BootstrapNavbar } from 'bootstrap';
+import Swal from 'sweetalert2';
 import logo from '../../img/logo.png';
+import Navigate from '../Router/Navigate';
 
 /**
  * Render the Navbar which is styled by using Bootstrap
@@ -12,16 +14,14 @@ import logo from '../../img/logo.png';
 const Navbar = () => {
   const navbarWrapper = document.querySelector('#navbarWrapper');
 
-
-  const isLoggedLocal = localStorage.getItem("token") !== null;
-  const isLoggedSession = sessionStorage.getItem("token") !== null;
+  const isLogged = localStorage.getItem('token') || sessionStorage.getItem('token');
 
   let loginOrLogoutLink;
   let createLink;
   let userSpace;
 
-  if (isLoggedLocal || isLoggedSession) {
-    loginOrLogoutLink = `<a class="nav-link" href="#" data-uri="/logout">Déconnexion</a>`;
+  if (isLogged) {
+    loginOrLogoutLink = `<a id = "logOut"class="nav-link">Déconnexion</a>`;
     createLink = `<li class="nav-item"><a class="nav-link" aria-current="page" href="#" data-uri="/create">Créer</a></li>`;
     userSpace = `<a class="nav-link" href="#" data-uri="/userSpace">Mon espace</a>`;
   } else {
@@ -76,6 +76,27 @@ const Navbar = () => {
       </nav>
   `;
   navbarWrapper.innerHTML = navbar;
+
+  const btnLogOut = document.getElementById('logOut');
+  if(btnLogOut !== null){
+    btnLogOut.addEventListener('click', handleLogout);
+  }
+  
 };
+
+function handleLogout() {
+  localStorage.removeItem('token');
+  sessionStorage.removeItem('token');
+
+  Navbar();
+  Swal.fire({
+    title: 'Deconnexion reussie',
+    icon: 'success',
+    timer: 1000,
+    showConfirmButton: false,
+  });
+
+  Navigate('/categories');
+}
 
 export default Navbar;

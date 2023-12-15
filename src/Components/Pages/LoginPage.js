@@ -1,10 +1,14 @@
 import Swal from 'sweetalert2';
+import anime from 'animejs';
 import Navbar from '../Navbar/Navbar';
 import Navigate from '../Router/Navigate';
 import { clearPage } from '../../utils/render';
+import { logIn } from '../../models/users';
+import { checkAuthentication } from '../../utils/auths';
+import image1 from '../../img/homePage.png';
+import image2 from '../../img/homePage2.png';
 
 let isRememberMeChecked = false;
-let isConditionGeneralChecked = false;
 
 function renderLoginForm() {
   const main = document.querySelector('main');
@@ -47,13 +51,6 @@ function renderLoginForm() {
                             <label class="form-check-label" for="rememberMe">Se souvenir de moi</label>
                         </div>
 
-                        <div class="mb-3 text-center">
-                          <div class="accept">
-                            J'accepte les <a href="https://www.privacypolicies.com/live/57c23a50-18c6-4d2b-9bc6-79fda5cc263d" target="_blank">termes & conditions</a>
-                          </div>
-                          <input type="checkbox" id="rgpd" class="form-check-input mt-2">
-                        </div>
-
                         <div class="mb-3">
                             <input id="login" type="button" class="btn btn-authentification mn-3  w-100"
                                 value="Se connecter" />
@@ -64,6 +61,9 @@ function renderLoginForm() {
                         <div class="mb-3">
                             <input id="register" type="button" class="btn btn-outline-secondary mn-3  w-100"
                                 value="Nouveau sur QUIZWIZ ? Créer un compte">
+                        </div>
+                        <div class="balloon-container">
+                          <!-- Balloons will be added here -->
                         </div>
 
                     </form>
@@ -81,11 +81,14 @@ function renderLoginForm() {
   const souvenir = document.getElementById('rememberMe');
   souvenir.addEventListener('change', remember);
 
-  const condition = document.getElementById('rgpd');
-  condition.addEventListener('change', conditionGeneral);
-
   const passswordInput = document.querySelector('#password');
   const passwordBtn = document.querySelector('#hidePassword');
+
+  const balloons = document.querySelectorAll('.balloon-container');
+  if (balloons.length === 0) {
+    createBalloons();
+    animateBalloons();
+  }
 
   passwordBtn.addEventListener('click', (e) => {
     e.preventDefault();
@@ -107,11 +110,6 @@ function remember() {
   console.log('se souvenir de moi : ', isRememberMeChecked);
 }
 
-function conditionGeneral() {
-  isConditionGeneralChecked = document.getElementById('rgpd').checked;
-  console.log('Condition general : ', isConditionGeneralChecked);
-}
-
 function handleRegisterClick() {
   Navigate('/register');
 }
@@ -119,72 +117,114 @@ function handleRegisterClick() {
 async function handleLoginClick(e) {
   e.preventDefault();
 
-  if (!isConditionGeneralChecked) {
-    Swal.fire({
-      title: 'Accepter les conditions générales',
-      icon: 'error',
-      showConfirmButton: true,
-    });
-  } else {
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value.trim();
 
-    const options = {
-      method: 'POST',
-      body: JSON.stringify({
-        username,
-        password,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
+  if (!username || !password) {
+    showError('Tous les champs du formulaire sont obligatoires');
+    return;
+  }
 
-    const response = await fetch(`${process.env.API_BASE_URL}/users/login`, options);
-
-    console.log(response.status);
+  try {
+    const response = await logIn(username, password);
 
     if (!response.ok) {
-      Swal.fire({
-        title: 'Le pseudo ou le mot de passe est incorrect',
-        icon: 'error',
-        showConfirmButton: true,
-      });
-    } else {
+      showError('Le pseudo ou le mot de passe est incorrect');
+      return;
+    }
+
+    const responseData = await response.json();
+
+    if (responseData && responseData.token) {
       if (isRememberMeChecked) {
-        const responseData = await response.json();
         localStorage.setItem('token', responseData.token);
       } else {
-        const responseData = await response.json();
         sessionStorage.setItem('token', responseData.token);
       }
+    
+    } else {
+      showError('Une erreurs est survenue');
+      return;
+    }
+    createBalloons();
+    animateBalloons();
 
-      Swal.fire({
-        title: 'Connexion réussie!',
-        icon: 'success',
-        timer: 1000,
-        showConfirmButton: false,
-      });
-
+    setTimeout(() => {
       Navbar();
       Navigate('/categories');
-    }
+    }, 5000);
+
+    console.log('pnl');
+  } catch (err) {
+    showError('Une erreur est survenue lors de la connexion');
+    console.error('Connexion Error:', err);
   }
 }
 
-const LoginPage = () => {
+function animateBalloons() {
+  anime({
+    targets: '.balloon', // Target the balloons directly
+    translateY: '-200vh',
+    duration: 100000,
+    easing: 'easeOutCubic',
+    complete(anim) {
+      anim.animatables.forEach((animatable) => {
+        animatable.target.remove();
+      });
+    },
+  });
+}
 
-  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+function createBalloons() {
+  const container = document.querySelector('.balloon-container');
 
-  if(token){
-    Swal.fire({
-      title: 'Vous etes deja connecter !',
-      icon: 'success',
-      timer: 1000,
-      showConfirmButton: false,
-    });
+  // Create and append balloons to the container
 
-    Navigate('/userspace');
+  if (!container) {
+    console.error('Balloon container not found');
+    return; // Exit the function if container is not found
+  }
+  for (let i = 0; i < 50; ) {
+    const balloon = document.createElement('img');
+        balloon.classList.add('balloon');
+        balloon.src = i % 2 === 0 ? image1 : image2;
+        balloon.style.setProperty('--random-horizontal', Math.random());
+        
+        const balloonWidth = getRandomBalloonWidth();
+        balloon.style.width = `${balloonWidth}px`;
+        balloon.style.height = 'auto'; // Maintain aspect ratio
+
+        container.appendChild(balloon);
+    i += 1;
+
+    console.log('ici je suis dans le for', i);
+  }
+}
+
+function getRandomBalloonWidth() {
+  const minWidth = 60; // Minimum width of the balloon
+  const maxWidth = 120; // Maximum width of the balloon
+  return Math.random() * (maxWidth - minWidth) + minWidth;
+}
+
+
+function showError(message) {
+  Swal.fire({
+    icon: 'error',
+    title: 'Oops...',
+    text: message,
+    showConfirmButton: true,
+  });
+}
+
+
+
+const LoginPage = async () => {
+  const isConnected = await checkAuthentication();
+
+  if (isConnected) {
+    Navigate('/userSpace');
+    return;
   }
   clearPage();
   renderLoginForm();

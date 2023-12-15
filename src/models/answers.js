@@ -1,6 +1,6 @@
 const fetchAnswersByQuestionId = async (questionId) => {
     try {
-        const response = await fetch(`${process.env.API_BASE_URL}/answers/${questionId}`);
+        const response = await fetch(`http://localhost:3000/answers/${questionId}`);
         if (!response.ok) {
             throw new Error(`Fetch error: ${response.status} - ${response.statusText}`);
         }
@@ -14,7 +14,7 @@ const fetchAnswersByQuestionId = async (questionId) => {
 };
 const isGivenAnswerCorrect = async (answerId) => {
     try {
-        const response = await fetch(`${process.env.API_BASE_URL}/answers/isTrue/${answerId}`);
+        const response = await fetch(`http://localhost:3000/answers/isTrue/${answerId}`);
         if (!response.ok) {
             throw new Error(`Fetch error: ${response.status} - ${response.statusText}`);
         }

@@ -1,10 +1,8 @@
-/* eslint-disable no-undef */
-/* eslint-disable no-console */
 import Swal from 'sweetalert2';
 
 const readAllCategories = async () => {
   try {
-    const response = await fetch(`${process.env.API_BASE_URL}/quizzes/categories`);
+    const response = await fetch('http://localhost:3000/quizzes/categories');
     if (!response.ok) {
       throw new Error(`Erreur HTTP: ${response.status}`);
     }
@@ -18,9 +16,6 @@ const readAllCategories = async () => {
 };
 
 const addOneQuiz = async (quiz) => {
-  console.log('I am in models/quizzes.js, in the function addOneQuiz');
-  console.log('param quiz : ', quiz);
-
   const main = document.querySelector('main');
   main.innerHTML = `
   <div class="text-center" id="loadingSpinner" style="display: none;">
@@ -32,14 +27,18 @@ const addOneQuiz = async (quiz) => {
   const loadingSpinner = document.querySelector('#loadingSpinner');
   try {
     loadingSpinner.style.display = 'block';
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    console.log('je suis le token');
+    console.log(token);
     const options = {
       method: 'POST',
       body: JSON.stringify(quiz),
       headers: {
         'Content-Type': 'application/json',
+        authorization: `${token}`,
       },
     };
-    const response = await fetch(`${process.env.API_BASE_URL}/quizzes`, options);
+    const response = await fetch('http://localhost:3000/quizzes', options);
     if (!response.ok) {
       throw new Error(`Erreur HTTP: ${response.status}`);
     }
@@ -57,7 +56,6 @@ const addOneQuiz = async (quiz) => {
   } catch (err) {
     loadingSpinner.style.display = 'none';
     Swal.fire({
-      // nécessaire ??
       title: 'Erreur lors de la création du quiz',
       text: err.message,
       icon: 'error',
@@ -67,9 +65,21 @@ const addOneQuiz = async (quiz) => {
   }
 };
 
-const readAllQuizzesByUser = async (id) => {
+const readAllQuizzesByUser = async () => {
+
+ 
   try {
-    const response = await fetch(`${process.env.API_BASE_URL}/quizzes/?user-id=${id}`);
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    console.log(token);
+    const options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: `${token}`,
+      },
+    };
+    
+    const response = await fetch(`http://localhost:3000/quizzes/`,options);
     if (!response.ok) {
       if (response.status === 400) {
         return [];
@@ -86,9 +96,6 @@ const readAllQuizzesByUser = async (id) => {
 };
 
 const deleteOneQuiz = async (quiz) => {
-  console.log('I am in models/quizzes.js, in the function deleteOneQuiz');
-  console.log('param quiz : ', quiz);
-
   const main = document.querySelector('main');
   main.innerHTML = `
   <div class="text-center" id="loadingSpinner" style="display: none;">
@@ -99,19 +106,24 @@ const deleteOneQuiz = async (quiz) => {
 `;
 
   const loadingSpinner = document.querySelector('#loadingSpinner');
+  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
   try {
     loadingSpinner.style.display = 'block';
     const options = {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
+        authorization: `${token}`,
+      
       },
     };
     console.log(options);
-    const response = await fetch(`${process.env.API_BASE_URL}/quizzes/${quiz}`, options);
+    const response = await fetch(`http://localhost:3000/quizzes/${quiz}`, options);
+    console.log(response.status)
     if (!response.ok) {
       throw new Error(`Erreur HTTP: ${response.status}`);
     }
+    
     loadingSpinner.style.display = 'none';
     const deletedQuiz = await response.json();
     console.log('deletedQuiz :', deletedQuiz);
@@ -124,16 +136,15 @@ const deleteOneQuiz = async (quiz) => {
   }
 };
 
-
 const readAllQuizzesByCategory = async (categoryName) => {
   try {
-    console.log('url :', `${process.env.API_BASE_URL}/?label=${categoryName}`);
-    const response = await fetch(`${process.env.API_BASE_URL}/quizzes/?label=${categoryName}`);
+    console.log('url :', `http://localhost:3000/quizzes/readAllQuizzesByCategories/?label=${categoryName}`);
+    const response = await fetch(`http://localhost:3000/quizzes/readAllQuizzesByCategories/?label=${categoryName}`);
 
-    console.log('response',response)
+    console.log('response', response);
     if (!response.ok) {
-      if(response.status === 400) {
-        console.log("je suis dans la verification");
+      if (response.status === 400) {
+        console.log('je suis dans la verification');
         return [];
       }
       console.error(`Erreur HTTP: ${response.status}`);
@@ -146,7 +157,40 @@ const readAllQuizzesByCategory = async (categoryName) => {
     console.error('readAllQuizzesByCategory::error:', err);
     throw err;
   }
-
 };
-
-export { readAllCategories, addOneQuiz, readAllQuizzesByUser, deleteOneQuiz, readAllQuizzesByCategory };
+const readOneQuizById = async (id) => {
+  const main = document.querySelector('main');
+  main.innerHTML += `
+  <div class="text-center" id="loadingSpinner" style="display: none;">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+`;
+  const loadingSpinner = document.querySelector('#loadingSpinner');
+  try {
+    loadingSpinner.style.display = 'block';
+    console.log('igo on me demande tous de aide');
+    console.log(id);
+    const response = await fetch(`http://localhost:3000/quizzes/readAllQuizzesByCategories/?quiz-id=${id}`);
+    if (!response.ok) {
+      throw new Error(`Erreur HTTP: ${response.status}`);
+    }
+    loadingSpinner.style.display = 'none';
+    const quiz = await response.json();
+    console.log('Quiz :', quiz);
+    return quiz;
+  } catch (err) {
+    loadingSpinner.style.display = 'none';
+    console.error('readOneQuizById::error: ', err);
+    throw err;
+  }
+};
+export {
+  readAllCategories,
+  addOneQuiz,
+  readAllQuizzesByUser,
+  deleteOneQuiz,
+  readAllQuizzesByCategory,
+  readOneQuizById,
+};
